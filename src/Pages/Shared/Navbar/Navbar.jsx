@@ -3,12 +3,12 @@ import logo from '../../../assets/shiftogo.png';
 
 const Navbar = () => {
     const links = <>
-        <NavLink to={'/'}><a className='mr-4'>Home</a></NavLink>
-        <NavLink to={'/services'}><a className='mr-4'>Services</a></NavLink>
-        <NavLink to={'/coverage'}><a className='mr-4'>Coverage</a></NavLink>
-        <NavLink to={'/about'}><a className='mr-4'>About Us</a></NavLink>
-        <NavLink to={'/pricing'}><a className='mr-4'>Pricing</a></NavLink>
-        <NavLink to={'/beARider'}><a className='mr-4'>Be a Rider</a></NavLink>
+        <NavLink to={'/'}><li className='mr-4'>Home</li></NavLink>
+        <NavLink to={'/services'}><li className='mr-4'>Services</li></NavLink>
+        <NavLink to={'/coverage'}><li className='mr-4'>Coverage</li></NavLink>
+        <NavLink to={'/about'}><li className='mr-4'>About Us</li></NavLink>
+        <NavLink to={'/pricing'}><li className='mr-4'>Pricing</li></NavLink>
+        <NavLink to={'/beARider'}><li className='mr-4'>Be a Rider</li></NavLink>
 
     </>
     return (
