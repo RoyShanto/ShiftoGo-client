@@ -3,6 +3,8 @@ import RootLayout from "../Layouts/RootLayout";
 import Home from "../Pages/Home/Home/Home";
 import Login from "../Pages/Login/Login";
 import BeARider from "../Pages/BeARider/BeARider";
+import Pricing from "../Pages/Pricing/Pricing";
+import AboutUs from "../Pages/AboutUs/AboutUs";
 
 export const router = createBrowserRouter([
     {
@@ -12,6 +14,8 @@ export const router = createBrowserRouter([
 
             { index: true, Component: Home },
             { path: "beARider", Component: BeARider },
+            { path: "pricing", Component: Pricing },
+            { path: "about", Component: AboutUs },
             { path: "signIn", Component: Login }
 
         ]
