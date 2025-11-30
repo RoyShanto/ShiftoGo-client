@@ -3,7 +3,7 @@ import logo from '../../../assets/shiftogo.png';
 
 const Footer = () => {
     return (
-        <footer className="footer footer-horizontal footer-center bg-neutral text-neutral-content p-10 rounded-xl">
+        <footer className="footer footer-horizontal footer-center bg-neutral text-neutral-content p-20 rounded-xl">
             <aside>
                 <img width={150} src={logo} alt="" />
                 
