@@ -7,6 +7,7 @@ import Pricing from "../Pages/Pricing/Pricing";
 import AboutUs from "../Pages/AboutUs/AboutUs";
 import TrackOrder from "../Pages/TrackOrder/TrackOrder";
 import Error from "../Pages/Error/Error";
+import Coverage from "../Pages/Coverage/Coverage";
 
 export const router = createBrowserRouter([
     {
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
             { path: "pricing", Component: Pricing },
             { path: "about", Component: AboutUs },
             { path: "trackOrder", Component: TrackOrder },
+            { path: "coverage", Component: Coverage },
             { path: "*", Component: Error },
             { path: "signIn", Component: Login }
 
