@@ -8,6 +8,7 @@ import AboutUs from "../Pages/AboutUs/AboutUs";
 import TrackOrder from "../Pages/TrackOrder/TrackOrder";
 import Error from "../Pages/Error/Error";
 import Coverage from "../Pages/Coverage/Coverage";
+import SendParcel from "../Pages/SendParcel/SendParcel";
 
 export const router = createBrowserRouter([
     {
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
             { path: "about", Component: AboutUs },
             { path: "trackOrder", Component: TrackOrder },
             { path: "coverage", Component: Coverage },
+            { path: "sendParcel", Component: SendParcel },
             { path: "*", Component: Error },
             { path: "signIn", Component: Login }
 
