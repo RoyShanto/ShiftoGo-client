@@ -9,7 +9,7 @@ import 'aos/dist/aos.css';
 Aos.init();
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <div className='max-w-7xl mx-auto bg-base-200 px-12 py-8 max-sm:p-5'>
+    <div className=''>
       <RouterProvider router={router} />
     </div>
   </StrictMode>,
