@@ -5,6 +5,8 @@ import Login from "../Pages/Login/Login";
 import BeARider from "../Pages/BeARider/BeARider";
 import Pricing from "../Pages/Pricing/Pricing";
 import AboutUs from "../Pages/AboutUs/AboutUs";
+import TrackOrder from "../Pages/TrackOrder/TrackOrder";
+import Error from "../Pages/Error/Error";
 
 export const router = createBrowserRouter([
     {
@@ -16,6 +18,8 @@ export const router = createBrowserRouter([
             { path: "beARider", Component: BeARider },
             { path: "pricing", Component: Pricing },
             { path: "about", Component: AboutUs },
+            { path: "trackOrder", Component: TrackOrder },
+            { path: "*", Component: Error },
             { path: "signIn", Component: Login }
 
         ]
