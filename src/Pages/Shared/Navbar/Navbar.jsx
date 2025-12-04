@@ -1,7 +1,20 @@
 import { Link, NavLink } from 'react-router';
 import logo from '../../../assets/shiftogo.png';
+import useAuth from '../../../hooks/useAuth';
 
 const Navbar = () => {
+    const { user, loading, signOutUser } = useAuth();
+
+    const handleLogout = () => {
+        signOutUser()
+            .then(() => {
+                console.log("Sign-out successful.")
+            })
+            .catch((error) => {
+                console.log("Problem", error)
+            });
+    }
+
     const links = <>
         <NavLink to={'/'}><li className='mr-4'>Home</li></NavLink>
         <NavLink to={'/services'}><li className='mr-4'>Services</li></NavLink>
@@ -26,7 +39,7 @@ const Navbar = () => {
                         {links}
                     </ul>
                 </div>
-                <a href="/"><img  className='md:w-40 max-sm:w-28' src={logo} alt="" /></a>
+                <a href="/"><img className='md:w-40 max-sm:w-28' src={logo} alt="" /></a>
 
             </div>
             <div className="navbar-center hidden lg:flex">
@@ -35,8 +48,9 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
+                <p>{!loading && user?.email}</p>
                 <Link to={'/login'} className="btn">Sign In</Link>
-                <Link to={'/logOut'} className="btn">Sign Out</Link>
+                <Link onClick={handleLogout} className="btn">Sign Out</Link>
             </div>
         </div>
     );

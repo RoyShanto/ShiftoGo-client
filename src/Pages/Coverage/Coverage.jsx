@@ -6,7 +6,7 @@ const Coverage = () => {
         <div className='py-20 px-28 bg-white rounded-4xl mb-48'>
             <div className='mb-12'>
                 <h1 className='text-6xl font-extrabold mb-12'>We are available in 64 districts</h1>
-                <div class="w-full">
+                <div className="w-full">
                     <label className="w-1/2 input input-bordered flex items-center gap-3 rounded-full bg-gray-100">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 20 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
