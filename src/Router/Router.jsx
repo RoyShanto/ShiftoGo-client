@@ -14,6 +14,7 @@ import Registration from "../Pages/Authentication/Registration/Registration";
 import ForgetPassword from "../Pages/Authentication/ForgetPassword/ForgetPassword";
 import EnterCode from "../Pages/Authentication/ForgetPassword/EnterCode";
 import ResetPassword from "../Pages/Authentication/ForgetPassword/ResetPassword";
+import PrivateRoute from "../Route/PrivateRoute";
 
 export const router = createBrowserRouter([
     {
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([
             { path: "beARider", Component: BeARider },
             { path: "pricing", Component: Pricing },
             { path: "about", Component: AboutUs },
-            { path: "trackOrder", Component: TrackOrder },
+            { path: "trackOrder", element: <PrivateRoute><TrackOrder /></PrivateRoute> },
             { path: "coverage", Component: Coverage },
             { path: "sendParcel", Component: SendParcel },
             { path: "*", Component: Error }
