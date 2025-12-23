@@ -79,8 +79,8 @@ const BeARider = () => {
                                     onChange={r => setSelectedRegion(r.target.value)}
                                 >
                                     <option value="" disabled>Select your Region</option>
-                                    {region.map((d, inx) => (
-                                        <option key={inx} value={d}>{d}</option>
+                                    {region.map((r, inx) => (
+                                        <option key={inx} value={r}>{r}</option>
                                     ))}
                                 </select>
                                 {errors.region && <p className="text-red-400">{errors.region.message}</p>}

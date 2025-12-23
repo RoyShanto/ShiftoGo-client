@@ -15,6 +15,14 @@ import ForgetPassword from "../Pages/Authentication/ForgetPassword/ForgetPasswor
 import EnterCode from "../Pages/Authentication/ForgetPassword/EnterCode";
 import ResetPassword from "../Pages/Authentication/ForgetPassword/ResetPassword";
 import PrivateRoute from "../Route/PrivateRoute";
+import DashboardLayout from "../Layouts/DashboardLayout";
+import ManageParcel from "../Pages/Dashboard/ManageParcel/ManageParcel";
+import MyParcels from "../Pages/Dashboard/myParcels/myParcels";
+import Dashboard from "../Pages/Dashboard/Dashboard/Dashboard";
+import AllDeliveries from "../Pages/Dashboard/AllDeliveries/AllDeliveries";
+import AddParcel from "../Pages/Dashboard/AddParcel/AddParcel";
+import PaymentHistory from "../Pages/Dashboard/PaymentHistory/PaymentHistory";
+
 
 export const router = createBrowserRouter([
     {
@@ -41,6 +49,18 @@ export const router = createBrowserRouter([
             { path: "forgetPassword", Component: ForgetPassword },
             { path: "enterCode", Component: EnterCode },
             { path: "resetPassword", Component: ResetPassword }
+        ]
+    },
+    {
+        path: "/",
+        Component: DashboardLayout,
+        children: [
+            { path: "dashboard", element: <PrivateRoute><Dashboard /></PrivateRoute> },
+            { path: "allDeliveries", element: <PrivateRoute><AllDeliveries /></PrivateRoute> },
+            { path: "addParcel", element: <PrivateRoute><AddParcel /></PrivateRoute> },
+            { path: "paymentHistory", element: <PrivateRoute><PaymentHistory /></PrivateRoute> },
+            { path: "myParcels", element: <PrivateRoute><MyParcels /></PrivateRoute> },
+            { path: "manageParcel", element: <PrivateRoute><ManageParcel /></PrivateRoute> }
         ]
     }
 ]);

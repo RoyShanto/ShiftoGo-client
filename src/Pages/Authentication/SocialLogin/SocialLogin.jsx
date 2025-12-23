@@ -1,13 +1,19 @@
 import React from 'react';
 import { FaGoogle } from 'react-icons/fa';
 import useAuth from '../../../hooks/useAuth';
+import { useLocation, useNavigate } from 'react-router';
 
 const SocialLogin = () => {
     const { createAccountWithGoogle } = useAuth();
+    const location = useLocation()
+    const from = location.state || "/"
+    const navigate = useNavigate();
+
     const handleGoogleLogin = () => {
         createAccountWithGoogle()
             .then((userCredential) => {
                 console.log(userCredential.user)
+                navigate(from)
             })
             .catch((error) => {
                 const errorCode = error.code;

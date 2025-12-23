@@ -1,10 +1,15 @@
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { useForm } from "react-hook-form"
 import useAuth from '../../../hooks/useAuth';
 import SocialLogin from '../SocialLogin/SocialLogin';
 
 const Login = () => {
     const { signInWithEmailPassword } = useAuth();
+    const location = useLocation();
+    const from = location.state || "/"
+    // console.log(from)
+    const navigate = useNavigate()
+
 
     const { register, handleSubmit, formState: { errors }, } = useForm()
     const onSubmit = (data) => {
@@ -12,6 +17,7 @@ const Login = () => {
         signInWithEmailPassword(data.email, data.password)
             .then((userCredential) => {
                 console.log(userCredential.user)
+                navigate(from)
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -58,7 +64,7 @@ const Login = () => {
                 </fieldset>
             </form>
             <div className="divider mb-3">OR</div>
-            <SocialLogin/>
+            <SocialLogin />
         </div>
     );
 };
