@@ -1,18 +1,39 @@
 import { useForm } from 'react-hook-form';
-import { FaGoogle } from 'react-icons/fa';
 import { TbUserUp } from 'react-icons/tb';
 import { Link } from 'react-router';
 import useAuth from '../../../hooks/useAuth';
 import SocialLogin from '../SocialLogin/SocialLogin';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Registration = () => {
-    const { createAccountWithEmailPassword } = useAuth();
+    const { createAccountWithEmailPassword, updateUser } = useAuth();
 
     const { handleSubmit, register, formState: { errors } } = useForm();
-    const onSubmit = data => {
+    const [preview, setPreview] = useState(null);
+
+    const onSubmit = async (data) => {
+
+        const imageFile = data.image[0];
+        const formData = new FormData();
+        formData.append("image", imageFile);
+
+        const url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_imgBB_API_Key}`
+        const res = await axios.post(url, formData);
+        const imageUrl = res.data.data.url;
+        // console.log(data.email, data.password, data.name, imageUrl)
+
         createAccountWithEmailPassword(data.email, data.password)
             .then((userCredential) => {
                 console.log(userCredential)
+                updateUser(data.name, imageUrl)
+                    .then(() => {
+                        console.log("Updated successfully: ", userCredential)
+                        // ...
+                    }).catch((error) => {
+                        console.log("Update error")
+                        // ...
+                    });
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -30,12 +51,36 @@ const Registration = () => {
                     <p className='mb-5'>Register with Shiftogo</p>
 
 
-                    <label className="border border-gray-200 w-14 p-1 rounded-full cursor-pointer">
-                        <div className="bg-gray-200 p-3 w-11 rounded-full text-xl text-gray-500 flex items-center justify-center">
-                            <TbUserUp />
-                        </div>
-                        <input type="file" className="hidden" />
-                    </label>
+                    <div className='flex gap-1'>
+                        <label className="my-auto border border-gray-200 w-14 p-1 rounded-full cursor-pointer">
+                            <div className="bg-gray-200 p-3 w-11 rounded-full text-xl text-gray-500 flex items-center justify-center">
+                                <TbUserUp />
+                            </div>
+                            <input type="file" className="hidden"
+                                accept="image/*" // allows only images
+                                {...register("image", {
+                                    required: true,
+                                    onChange: (e) => {
+                                        const file = e.target.files[0];
+                                        if (!file) return;
+                                        setPreview(URL.createObjectURL(file));
+                                    }
+                                })}
+                            />
+                        </label>
+
+
+                        {preview && (
+                            <div className='w-12 h-12 rounded-full border border-gray-300 '>
+                                <img
+                                    src={preview}
+                                    alt="Preview"
+                                    className="w-full h-full rounded-full"
+                                />
+                            </div>
+                        )}
+
+                    </div>
 
                     <label className="font-medium text-sm">Name</label>
                     <input type="text" {...register("name", {
