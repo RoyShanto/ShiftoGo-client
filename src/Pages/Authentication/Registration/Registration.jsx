@@ -5,12 +5,15 @@ import useAuth from '../../../hooks/useAuth';
 import SocialLogin from '../SocialLogin/SocialLogin';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import useAxios from '../../../hooks/useAxios';
 
 const Registration = () => {
     const { createAccountWithEmailPassword, updateUser } = useAuth();
 
     const { handleSubmit, register, formState: { errors } } = useForm();
     const [preview, setPreview] = useState(null);
+    const axiosInstance = useAxios();
+
 
     const onSubmit = async (data) => {
 
@@ -19,26 +22,32 @@ const Registration = () => {
         formData.append("image", imageFile);
 
         const url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_imgBB_API_Key}`
-        const res = await axios.post(url, formData);
-        const imageUrl = res.data.data.url;
-        // console.log(data.email, data.password, data.name, imageUrl)
+        const userInfo = {
+            email: data.email,
+            role: "user",
+            creationDate: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+        }
 
         createAccountWithEmailPassword(data.email, data.password)
-            .then((userCredential) => {
-                console.log(userCredential)
+            .then(async (userCredential) => {
+                const res = await axios.post(url, formData);
+                const imageUrl = res.data.data.url;
                 updateUser(data.name, imageUrl)
-                    .then(() => {
-                        console.log("Updated successfully: ", userCredential)
-                        // ...
+                    .then(async () => {
+                        // console.log("Updated successfully: ", userCredential)
+                        const res = await axiosInstance.post('/users', userInfo)
+                        console.log(res.data)
                     }).catch((error) => {
-                        console.log("Update error")
-                        // ...
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log("Update Error", errorCode, errorMessage)
                     });
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode, errorMessage)
+                console.log("Registration Error", errorCode, errorMessage)
             });
     }
 
