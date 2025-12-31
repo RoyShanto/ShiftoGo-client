@@ -2,9 +2,11 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { useForm } from "react-hook-form"
 import useAuth from '../../../hooks/useAuth';
 import SocialLogin from '../SocialLogin/SocialLogin';
+import useAxios from '../../../hooks/useAxios';
 
 const Login = () => {
     const { signInWithEmailPassword } = useAuth();
+    const axiosInstance = useAxios();
     const location = useLocation();
     const from = location.state || "/"
     // console.log(from)
@@ -13,10 +15,16 @@ const Login = () => {
 
     const { register, handleSubmit, formState: { errors }, } = useForm()
     const onSubmit = (data) => {
+        const userInfo = {
+            email: data.email
+        }
         // console.log(data)
         signInWithEmailPassword(data.email, data.password)
-            .then((userCredential) => {
-                console.log(userCredential.user)
+            .then(async (userCredential) => {
+                // console.log(userCredential.user)
+                const email = userCredential.user.email
+                const result = await axiosInstance.post('/users', userInfo);
+                console.log(result.data)
                 navigate(from)
             })
             .catch((error) => {

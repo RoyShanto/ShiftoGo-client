@@ -22,8 +22,13 @@ const Navbar = () => {
         <NavLink to={'/trackOrder'}><li className='mr-4'>Track Order</li></NavLink>
         <NavLink to={'/about'}><li className='mr-4'>About Us</li></NavLink>
         <NavLink to={'/pricing'}><li className='mr-4'>Pricing</li></NavLink>
-        <NavLink to={'/sendParcel'}><li className='mr-4'>Send Parcel</li></NavLink>
-        <NavLink to={'/beARider'}><li className='mr-4'>Be a Rider</li></NavLink>
+
+
+        {user && <>
+            <NavLink to={'/sendParcel'}><li className='mr-4'>Send Parcel</li></NavLink>
+            <NavLink to={'/beARider'}><li className='mr-4'>Be a Rider</li></NavLink>
+            <NavLink to={'/dashboard'}><li className='mr-4'>Dashboard</li></NavLink>
+        </>}
 
     </>
     return (

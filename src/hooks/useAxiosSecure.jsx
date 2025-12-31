@@ -1,4 +1,5 @@
 import axios from "axios";
+import useAuth from "./useAuth";
 
 
 const axiosSecure = axios.create({
@@ -9,6 +10,16 @@ const axiosSecure = axios.create({
 
 
 const useAxiosSecure = () => {
+    const { user } = useAuth();
+    // console.log(user?.accessToken)
+
+    axiosSecure.interceptors.request.use(async (config) => {
+        if (user) {
+            const token = user?.accessToken;
+            config.headers.authorization = `Bearer ${token}`;
+        }
+        return config;
+    });
     return axiosSecure;
 };
 
