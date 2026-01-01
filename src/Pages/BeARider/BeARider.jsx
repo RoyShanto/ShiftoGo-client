@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import agentPending from "../../assets/agent-pending.png"
 import { useForm } from 'react-hook-form';
+import useAuth from '../../hooks/useAuth';
+import useAxios from '../../hooks/useAxios';
 
 const BeARider = () => {
-    
+    const { user } = useAuth()
+    const axiosInstance = useAxios()
     const [location, setLocation] = useState([]);
     useEffect(() => {
         fetch('./data/coverageMap.json')
@@ -18,9 +21,28 @@ const BeARider = () => {
 
 
 
-    const { handleSubmit, register, formState: { errors } } = useForm();
-    const onSubmit = values => {
-        console.log(values);
+    const { handleSubmit, setValue, register, reset, formState: { errors } } = useForm();
+    useEffect(() => {
+        if (user) {
+            setValue("name", user?.displayName);
+            setValue("email", user?.email);
+        }
+    }, [user, setValue]);
+
+
+    const onSubmit = async (values) => {
+
+        const formData = {
+            ...values,
+            status: "deactivate",
+            creationDate: new Date().toISOString()
+
+        };
+        console.log(formData);
+
+        const result = await axiosInstance.post("/riders", formData)
+        console.log(result.data.message)
+        reset();
     }
     return (
         <div className='mb-32 bg-white rounded-4xl px-24 pb-36'>
@@ -38,6 +60,8 @@ const BeARider = () => {
                                 <label className="font-medium text-sm">Your Name</label>
                                 <input
                                     type="text"
+                                    // defaultValue={user?.displayName}
+                                    readOnly
                                     {...register("name", { required: "Name is required" })}
                                     className="input rounded-md w-full"
                                     placeholder="Your Name"
@@ -58,6 +82,8 @@ const BeARider = () => {
                                 <label className="font-medium text-sm">Your Email</label>
                                 <input
                                     type="email"
+                                    readOnly
+                                    // defaultValue={user?.email}
                                     {...register("email", {
                                         required: "Email is required",
                                         pattern: {

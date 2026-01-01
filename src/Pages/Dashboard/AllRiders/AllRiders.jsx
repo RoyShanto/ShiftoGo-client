@@ -1,0 +1,219 @@
+import { useEffect, useState } from "react";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { FaEye } from "react-icons/fa";
+
+const AllRiders = () => {
+    const [riders, setRiders] = useState([]);
+    const [selectedRider, setSelectedRider] = useState(null);
+    const [newStatus, setNewStatus] = useState(null);
+    const [sortOrder, setSortOrder] = useState("asc"); // asc | desc
+    const axiosSecure = useAxiosSecure();
+
+    // 🔹 Load riders
+    useEffect(() => {
+        axiosSecure.get("/riders").then(res => {
+            setRiders(res.data);
+        });
+    }, [axiosSecure]);
+
+
+    // View rider
+    const handleView = (rider) => {
+        setSelectedRider(rider);
+        document.getElementById("view_rider_modal").showModal();
+    };
+
+    const handleActivateDeactivate = async (rider) => {
+        setSelectedRider(rider)
+        setNewStatus(rider.status === "activate" ? "deactivate" : "activate")
+        document.getElementById("confirmation_modal").showModal();
+    };
+
+    const updateStatus = async () => {
+        // 1️⃣ Optimistic UI update
+        setRiders(prev =>
+            prev.map(r =>
+                r._id === selectedRider._id ? { ...r, status: newStatus } : r
+            )
+        );
+
+        try {
+
+            // 2️⃣ API call
+            await axiosSecure.patch(`/riders/${selectedRider._id}`, { status: newStatus, });
+        } catch (error) {
+            alert("Status update failed!");
+
+            // 3️⃣ Rollback on error
+            setRiders(prev =>
+                prev.map(r =>
+                    r._id === selectedRider._id ? { ...r, status: selectedRider.status } : r
+                )
+            );
+        }
+    }
+
+    const handleSortByStatus = () => {
+        const nextOrder = sortOrder === "asc" ? "desc" : "asc";
+        setSortOrder(nextOrder);
+
+        setRiders(prev =>
+            [...prev].sort((a, b) => {
+                return nextOrder === "asc"
+                    ? a.status.localeCompare(b.status)
+                    : b.status.localeCompare(a.status);
+            })
+        );
+    };
+
+
+
+    return (
+        <div className="p-6">
+            <h2 className="text-xl font-bold mb-4">
+                All Riders ({riders.length})
+            </h2>
+
+            <div className="overflow-x-auto">
+                <table className="table table-zebra">
+                    <thead>
+                        <tr className="text-lg">
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Region</th>
+                            <th>Bike</th>
+                            <th
+                                className="cursor-pointer select-none"
+                                onClick={handleSortByStatus}
+                            >
+                                Status {sortOrder === "asc" ? "⬆️" : "⬇️"}
+                            </th>
+
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {riders.map((rider, index) => (
+                            <tr key={rider._id}>
+                                <td>{index + 1}</td>
+                                <td>{rider.name}</td>
+                                <td>{rider.email}</td>
+                                <td>{rider.phone}</td>
+                                <td>{rider.region}</td>
+                                <td>{rider.bikeModel}</td>
+                                <td>
+                                    <span
+                                        className={`badge ${rider.status === "activate"
+                                            ? "badge-success"
+                                            : "badge-warning"
+                                            }`}
+                                    >
+                                        {rider.status}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button
+                                        onClick={() => handleView(rider)}
+                                        className="btn btn-xs btn-info mr-1"
+                                    >
+                                        <FaEye />
+                                    </button>
+
+                                    <button
+                                        onClick={() => handleActivateDeactivate(rider)}
+                                        className={`btn btn-xs ${rider.status === "activate"
+                                            ? "btn-error"
+                                            : "btn-success"
+                                            }`}
+                                    >
+                                        {rider.status === "activate" ? "Deactivate" : "Activate"}
+                                    </button>
+
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+
+                </table>
+            </div>
+
+            {/* 🔍 VIEW MODAL */}
+            <dialog id="view_rider_modal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg mb-4">Rider Details</h3>
+
+                    {selectedRider && (
+                        <div className="space-y-2 text-sm">
+                            <p><b>Name:</b> {selectedRider.name}</p>
+                            <p><b>Email:</b> {selectedRider.email}</p>
+                            <p><b>Phone:</b> {selectedRider.phone}</p>
+                            <p><b>License:</b> {selectedRider.license}</p>
+                            <p><b>NID:</b> {selectedRider.nid}</p>
+                            <p><b>Region:</b> {selectedRider.region}</p>
+                            <p><b>District:</b> {selectedRider.district}</p>
+                            <p><b>Bike Model:</b> {selectedRider.bikeModel}</p>
+                            <p><b>Bike Reg:</b> {selectedRider.bikeReg}</p>
+                            <p><b>About:</b> {selectedRider.about}</p>
+                            <p>
+                                <b>Status:</b>{" "}
+                                <span className={`badge ${selectedRider.status === "activate"
+                                    ? "badge-success"
+                                    : "badge-warning"
+                                    }`}>
+                                    {selectedRider.status}
+                                </span>
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="modal-action">
+                        <form method="dialog">
+                            <button className="btn">Close</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+
+            {/* 🔍 CONFIRMATION MODAL */}
+            <dialog id="confirmation_modal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg text-error">
+                        Confirm Deactivation
+                    </h3>
+
+                    <p className="py-4">
+                        Are you sure you want to {newStatus}{" "}
+                        <span className="font-semibold">
+                            {selectedRider?.name}
+                        </span>
+                        ?
+                    </p>
+
+                    <div className="modal-action">
+                        <form method="dialog" className="space-x-2">
+                            <button
+                                onClick={updateStatus}
+                                className="btn btn-error"
+                            >
+                                Yes
+                            </button>
+
+                            <button
+                                onClick={() => setSelectedRider(null)}
+                                className="btn btn-outline"
+                            >
+                                Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+
+        </div>
+    );
+};
+
+export default AllRiders;

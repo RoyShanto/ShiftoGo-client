@@ -22,6 +22,7 @@ import Dashboard from "../Pages/Dashboard/Dashboard/Dashboard";
 import AllDeliveries from "../Pages/Dashboard/AllDeliveries/AllDeliveries";
 import AddParcel from "../Pages/Dashboard/AddParcel/AddParcel";
 import PaymentHistory from "../Pages/Dashboard/PaymentHistory/PaymentHistory";
+import AllRiders from "../Pages/Dashboard/AllRiders/AllRiders";
 
 
 export const router = createBrowserRouter([
@@ -60,7 +61,8 @@ export const router = createBrowserRouter([
             { path: "addParcel", element: <PrivateRoute><AddParcel /></PrivateRoute> },
             { path: "paymentHistory", element: <PrivateRoute><PaymentHistory /></PrivateRoute> },
             { path: "myParcels", element: <PrivateRoute><MyParcels /></PrivateRoute> },
-            { path: "manageParcel", element: <PrivateRoute><ManageParcel /></PrivateRoute> }
+            { path: "manageParcel", element: <PrivateRoute><ManageParcel /></PrivateRoute> },
+            { path: "allRiders", element: <PrivateRoute><AllRiders /></PrivateRoute> }
         ]
     }
 ]);
