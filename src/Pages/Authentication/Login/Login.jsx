@@ -67,7 +67,7 @@ const Login = () => {
 
 
                     <button type="submit" className="btn text-black mt-4 mb-3 bg-[#CAEB66]">Login</button>
-                    <p>Don’t have any account? <Link to={'/registration'} className='text-[#CAEB66]'>Register</Link></p>
+                    <p>Don’t have any account? <Link state={ from } to={'/registration'} className='text-[#CAEB66]'>Register</Link></p>
 
                 </fieldset>
             </form>

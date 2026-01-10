@@ -8,6 +8,8 @@ const AllRiders = () => {
     const [newStatus, setNewStatus] = useState(null);
     const [sortOrder, setSortOrder] = useState("asc"); // asc | desc
     const axiosSecure = useAxiosSecure();
+    const [searchText, setSearchText] = useState("");
+
 
     // 🔹 Load riders
     useEffect(() => {
@@ -38,11 +40,10 @@ const AllRiders = () => {
         );
 
         try {
-
             // 2️⃣ API call
-            await axiosSecure.patch(`/riders/${selectedRider._id}`, { status: newStatus, });
+            await axiosSecure.patch(`/riders/${selectedRider._id}/status`, { status: newStatus, email: selectedRider.email });
         } catch (error) {
-            alert("Status update failed!");
+            alert("Status update failed!", error);
 
             // 3️⃣ Rollback on error
             setRiders(prev =>
@@ -66,14 +67,35 @@ const AllRiders = () => {
         );
     };
 
+    const filteredRiders = riders.filter(rider =>
+        rider.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        rider.email.toLowerCase().includes(searchText.toLowerCase()) ||
+        rider.phone.includes(searchText) ||
+        rider.region.toLowerCase().includes(searchText.toLowerCase()) ||
+        rider.district.toLowerCase().includes(searchText.toLowerCase())
+    );
+
 
 
     return (
         <div className="p-6">
+
+            {/* Search Box */}
+            <div className="flex justify-center">
+                <input
+                    type="text"
+                    placeholder="Search by name, email, phone, region..."
+                    className="input input-success w-full max-w-96 rounded-2xl shadow-md"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
+            </div>
+
             <h2 className="text-xl font-bold mb-4">
-                All Riders ({riders.length})
+                All Riders ({filteredRiders.length})
             </h2>
 
+            {/* Display Table */}
             <div className="overflow-x-auto">
                 <table className="table table-zebra">
                     <thead>
@@ -96,7 +118,7 @@ const AllRiders = () => {
                     </thead>
 
                     <tbody>
-                        {riders.map((rider, index) => (
+                        {filteredRiders.map((rider, index) => (
                             <tr key={rider._id}>
                                 <td>{index + 1}</td>
                                 <td>{rider.name}</td>
@@ -181,7 +203,7 @@ const AllRiders = () => {
             <dialog id="confirmation_modal" className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg text-error">
-                        Confirm Deactivation
+                        Confirm {newStatus}
                     </h3>
 
                     <p className="py-4">

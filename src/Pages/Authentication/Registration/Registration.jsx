@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { TbUserUp } from 'react-icons/tb';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import useAuth from '../../../hooks/useAuth';
 import SocialLogin from '../SocialLogin/SocialLogin';
 import { useEffect, useState } from 'react';
@@ -13,6 +13,10 @@ const Registration = () => {
     const { handleSubmit, register, formState: { errors } } = useForm();
     const [preview, setPreview] = useState(null);
     const axiosInstance = useAxios();
+
+    const location = useLocation();
+    const navigate = useNavigate()
+    const from = location.state || "/"
 
 
     const onSubmit = async (data) => {
@@ -38,6 +42,7 @@ const Registration = () => {
                         // console.log("Updated successfully: ", userCredential)
                         const res = await axiosInstance.post('/users', userInfo)
                         console.log(res.data)
+                        navigate(from)
                     }).catch((error) => {
                         const errorCode = error.code;
                         const errorMessage = error.message;

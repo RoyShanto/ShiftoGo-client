@@ -23,6 +23,9 @@ import AllDeliveries from "../Pages/Dashboard/AllDeliveries/AllDeliveries";
 import AddParcel from "../Pages/Dashboard/AddParcel/AddParcel";
 import PaymentHistory from "../Pages/Dashboard/PaymentHistory/PaymentHistory";
 import AllRiders from "../Pages/Dashboard/AllRiders/AllRiders";
+import MakeAdmin from "../Pages/Dashboard/makeAdmin/makeAdmin";
+import AdminRoute from "../Route/AdminRoute";
+
 
 
 export const router = createBrowserRouter([
@@ -32,12 +35,12 @@ export const router = createBrowserRouter([
         children: [
 
             { index: true, Component: Home },
-            { path: "beARider", Component: BeARider },
+            { path: "beARider", element: <PrivateRoute><BeARider /></PrivateRoute> },
             { path: "pricing", Component: Pricing },
             { path: "about", Component: AboutUs },
             { path: "trackOrder", element: <PrivateRoute><TrackOrder /></PrivateRoute> },
             { path: "coverage", Component: Coverage },
-            { path: "sendParcel", Component: SendParcel },
+            { path: "sendParcel", element: <PrivateRoute><SendParcel /></PrivateRoute> },
             { path: "*", Component: Error }
         ]
     },
@@ -62,7 +65,8 @@ export const router = createBrowserRouter([
             { path: "paymentHistory", element: <PrivateRoute><PaymentHistory /></PrivateRoute> },
             { path: "myParcels", element: <PrivateRoute><MyParcels /></PrivateRoute> },
             { path: "manageParcel", element: <PrivateRoute><ManageParcel /></PrivateRoute> },
-            { path: "allRiders", element: <PrivateRoute><AllRiders /></PrivateRoute> }
+            { path: "allRiders", element: <PrivateRoute><AllRiders /></PrivateRoute> },
+            { path: "makeAdmin", element: <AdminRoute><MakeAdmin /></AdminRoute> }
         ]
     }
 ]);
