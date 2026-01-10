@@ -34,8 +34,7 @@ const BeARider = () => {
 
         const formData = {
             ...values,
-            status: "deactivate",
-            role: "user",
+            status: "pending",
             creationDate: new Date().toISOString()
 
         };

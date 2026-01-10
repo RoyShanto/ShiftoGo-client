@@ -56,16 +56,16 @@ export const router = createBrowserRouter([
         ]
     },
     {
-        path: "/",
-        Component: DashboardLayout,
+        path: "/dashboard",
+        element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
         children: [
-            { path: "dashboard", element: <PrivateRoute><Dashboard /></PrivateRoute> },
-            { path: "allDeliveries", element: <PrivateRoute><AllDeliveries /></PrivateRoute> },
-            { path: "addParcel", element: <PrivateRoute><AddParcel /></PrivateRoute> },
-            { path: "paymentHistory", element: <PrivateRoute><PaymentHistory /></PrivateRoute> },
-            { path: "myParcels", element: <PrivateRoute><MyParcels /></PrivateRoute> },
-            { path: "manageParcel", element: <PrivateRoute><ManageParcel /></PrivateRoute> },
-            { path: "allRiders", element: <PrivateRoute><AllRiders /></PrivateRoute> },
+            { path: "dashboard", element: <Dashboard /> },
+            { path: "allDeliveries", element: <AllDeliveries /> },
+            { path: "addParcel", element: <AddParcel /> },
+            { path: "paymentHistory", element: <PaymentHistory /> },
+            { path: "myParcels", element: <MyParcels /> },
+            { path: "manageParcel", element: <ManageParcel /> },
+            { path: "allRiders", element: <AllRiders /> },
             { path: "makeAdmin", element: <AdminRoute><MakeAdmin /></AdminRoute> }
         ]
     }

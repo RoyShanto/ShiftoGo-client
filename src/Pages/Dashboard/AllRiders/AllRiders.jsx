@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { FaEye } from "react-icons/fa";
+import { FaCheckCircle, FaEye } from "react-icons/fa";
 
 const AllRiders = () => {
     const [riders, setRiders] = useState([]);
@@ -24,6 +24,23 @@ const AllRiders = () => {
         setSelectedRider(rider);
         document.getElementById("view_rider_modal").showModal();
     };
+
+    const handleAcceptRider = async (rider) => {
+        // rider.status === "pending" && rider.role === "user"
+        try {
+            // 2️⃣ API call
+            await axiosSecure.patch(`/riders/${rider._id}/acceptRider`, { status: "activate", email: rider.email });
+
+            // 3️⃣ Rollback on error
+            setRiders(prev =>
+                prev.map(r =>
+                    r._id === rider._id ? { ...r, status: "activate" } : r
+                )
+            );
+        } catch (error) {
+            alert("The user is not accepted as a rider!", error);
+        }
+    }
 
     const handleActivateDeactivate = async (rider) => {
         setSelectedRider(rider)
@@ -137,15 +154,13 @@ const AllRiders = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    <button
-                                        onClick={() => handleView(rider)}
-                                        className="btn btn-xs btn-info mr-1"
-                                    >
-                                        <FaEye />
-                                    </button>
+                                    <button onClick={() => handleView(rider)} className="btn btn-xs btn-info mr-1" > <FaEye /> </button>
+                                    <button onClick={() => handleAcceptRider(rider)}
+                                        disabled={rider.status !== "pending"}
+                                        className="btn btn-xs btn-info mr-1" > <FaCheckCircle /> </button>
 
-                                    <button
-                                        onClick={() => handleActivateDeactivate(rider)}
+                                    <button onClick={() => handleActivateDeactivate(rider)}
+                                        disabled={rider.status === "pending"}
                                         className={`btn btn-xs ${rider.status === "activate"
                                             ? "btn-error"
                                             : "btn-success"
