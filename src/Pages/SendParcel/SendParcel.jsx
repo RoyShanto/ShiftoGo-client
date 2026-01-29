@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useNavigate } from 'react-router';
 
 const SendParcel = () => {
     const { handleSubmit, register, setValue, watch, formState: { errors } } = useForm();
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
+    const navigate = useNavigate()
 
 
 
@@ -50,7 +52,7 @@ const SendParcel = () => {
     // const deliveryCharge = 50000;
     const [deliveryCharge, setDeliveryCharge] = useState(0)
 
-    const onSubmit = values => {
+    const onSubmit = async (values) => {
         // console.log(values);
         const { weight, yourDistrict, receiverDistrict, senderName, receiverName, senderContactNo, receiverContactNo } = values;
 
@@ -87,7 +89,7 @@ const SendParcel = () => {
 
         setDeliveryCharge(charge);
         // console.log("৳", charge);
-        document.getElementById('my_modal_1').showModal()
+
 
 
 
@@ -111,11 +113,16 @@ const SendParcel = () => {
         // });
 
 
+        try {
+            const res = await axiosSecure.post('/parcels', parcelInfo);
+            console.log(res.data);
 
-        axiosSecure.post('/parcels', parcelInfo)
-            .then(res => {
-                console.log(res.data)
-            })
+            // open modal ONLY after success
+            document.getElementById('my_modal_1').showModal();
+        } catch (error) {
+            alert("Parcel creation failed!", error);
+        }
+
 
 
 
@@ -294,7 +301,6 @@ const SendParcel = () => {
 
 
             {/* Open the modal using document.getElementById('ID').showModal() method */}
-            <button className="btn" onClick={() => document.getElementById('my_modal_1').showModal()}>open modal</button>
             <dialog id="my_modal_1" className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Hello!</h3>
@@ -302,7 +308,7 @@ const SendParcel = () => {
                     <div className="modal-action">
                         <form method="dialog">
                             {/* if there is a button in form, it will close the modal */}
-                            <button className="btn">Close</button>
+                            <button className="btn" onClick={() => navigate('/dashboard/myParcels')} > OK </button>
                         </form>
                     </div>
                 </div>

@@ -35,10 +35,10 @@ const BeARider = () => {
         const formData = {
             ...values,
             status: "pending",
+            currentStatus: "busy",
             creationDate: new Date().toISOString()
-
         };
-        console.log(formData);
+        // console.log(formData);
 
         const result = await axiosInstance.post("/riders", formData)
         console.log(result.data.message)

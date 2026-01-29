@@ -1,10 +1,12 @@
 import { Link, NavLink } from 'react-router';
 import logo from '../../../assets/shiftogo.png';
 import useAuth from '../../../hooks/useAuth';
+import useUserRole from '../../../hooks/useUserRoll';
 
 const Navbar = () => {
     const { user, loading, signOutUser } = useAuth();
-
+    const userRoll = useUserRole()
+    // console.log(userRoll.role)
 
     const handleLogout = () => {
         signOutUser()
@@ -27,7 +29,9 @@ const Navbar = () => {
 
         {user && <>
             <NavLink to={'/sendParcel'}><li className='mr-4'>Send Parcel</li></NavLink>
-            <NavLink to={'/beARider'}><li className='mr-4'>Be a Rider</li></NavLink>
+            {userRoll.role === "user" &&
+                <NavLink to={'/beARider'}><li className='mr-4'>Be a Rider</li></NavLink>}
+
             <NavLink to={'/dashboard'}><li className='mr-4'>Dashboard</li></NavLink>
         </>}
 
@@ -54,13 +58,28 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                {
-                    user ? <>
-                        <p>{user?.displayName}</p>
-                        <Link onClick={handleLogout} className="btn">Sign Out</Link>
-                    </> : <Link to={'/login'} className="btn">Sign In</Link>
-                }
+                {user ? (
+                    <div className="relative group">
+                        {/* Profile Image */}
+                        <div className="flex justify-center items-center border border-lime-500 rounded-full p-0.5 w-10 h-10 cursor-pointer">
+                            <img src={user?.photoURL}
+                                className="w-full h-full rounded-full object-cover"
+                                alt="user"
+                            />
+                        </div>
+
+                        {/* Hover Dropdown */}
+                        <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <p className="px-4 py-2 text-sm font-medium border-b">
+                                {user?.displayName}
+                            </p>
+                            <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100" > My Profile </button>
+                            <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100" > Sign Out </button>
+                        </div>
+                    </div>
+                ) : (<Link to="/login" className="btn"> Sign In </Link>)}
             </div>
+
         </div>
     );
 };

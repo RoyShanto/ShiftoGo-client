@@ -25,6 +25,7 @@ import PaymentHistory from "../Pages/Dashboard/PaymentHistory/PaymentHistory";
 import AllRiders from "../Pages/Dashboard/AllRiders/AllRiders";
 import MakeAdmin from "../Pages/Dashboard/makeAdmin/makeAdmin";
 import AdminRoute from "../Route/AdminRoute";
+import UserRoute from "../Route/UserRoute";
 
 
 
@@ -35,7 +36,7 @@ export const router = createBrowserRouter([
         children: [
 
             { index: true, Component: Home },
-            { path: "beARider", element: <PrivateRoute><BeARider /></PrivateRoute> },
+            { path: "beARider", element: <PrivateRoute><UserRoute><BeARider /></UserRoute></PrivateRoute> },
             { path: "pricing", Component: Pricing },
             { path: "about", Component: AboutUs },
             { path: "trackOrder", element: <PrivateRoute><TrackOrder /></PrivateRoute> },

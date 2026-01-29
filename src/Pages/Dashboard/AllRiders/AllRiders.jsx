@@ -203,6 +203,7 @@ const AllRiders = () => {
                                     {selectedRider.status}
                                 </span>
                             </p>
+                            <p><b>Current Status:</b> {selectedRider.currentStatus}</p>
                         </div>
                     )}
 

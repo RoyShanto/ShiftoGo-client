@@ -24,15 +24,29 @@ const MyParcels = () => {
     }, [user?.email, axiosSecure]);
 
     const formatDate = (date) => {
-        new Date(date).toLocaleDateString("en-GB");
+        return new Date(date).toLocaleDateString("en-GB");
         // new Date(date).toLocaleString();
     }
 
 
     const handleDeleteClick = (id) => {
         setParcelDeleteId(id);
-        document.getElementById("confirmation_modal").showModal();
+        document.getElementById("delete_confirmation_modal").showModal();
     };
+
+    const handlePayment = async () => {
+        const previousParcels = [...parcels];
+        // Optimistically update UI
+        setParcels(prev => prev.map(p => p._id === selectedParcel._id ? { ...p, paymentStatus: "paid" } : p));
+        try {
+            await axiosSecure.patch(`/parcels/${selectedParcel._id}`, { paymentStatus: "paid" });
+        } catch (err) {
+            setParcels(previousParcels);
+            alert("Payment failed!", err);
+        } finally {
+            document.getElementById("payment_modal").close();
+        }
+    }
 
     const handleConfirmDelete = async () => {
         if (!parcelDeleteId) return;
@@ -47,10 +61,10 @@ const MyParcels = () => {
         } catch (err) {
             // Rollback
             setParcels(previousParcels);
-            alert("Delete failed!");
+            alert("Delete failed!", err);
         } finally {
             setParcelDeleteId(null);
-            document.getElementById("confirmation_modal").close();
+            document.getElementById("delete_confirmation_modal").close();
         }
     };
 
@@ -70,6 +84,7 @@ const MyParcels = () => {
                             <th>Date</th>
                             <th>Charge</th>
                             <th>Payment</th>
+                            <th>Delivery Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -93,6 +108,16 @@ const MyParcels = () => {
                                         {parcel.paymentStatus}
                                     </span>
                                 </td>
+                                <td>
+                                    <span
+                                        className={`badge ${parcel.deliveryStatus === "pending"
+                                            ? "badge-warning"
+                                            : "badge-success"
+                                            }`}
+                                    >
+                                        {parcel.deliveryStatus}
+                                    </span>
+                                </td>
 
                                 <td className="space-x-2">
                                     <button
@@ -105,7 +130,12 @@ const MyParcels = () => {
                                     </button>
 
                                     <button
-                                        className="btn btn-xs btn-success" disabled={parcel.paymentStatus === "paid"} >
+                                        className="btn btn-xs btn-success" disabled={parcel.paymentStatus === "paid"}
+                                        onClick={() => {
+                                            setSelectedParcel(parcel);
+                                            document.getElementById("payment_modal").showModal();
+                                        }}
+                                    >
                                         Pay
                                     </button>
 
@@ -188,7 +218,7 @@ const MyParcels = () => {
                                         </p>
 
                                         <p>
-                                            <span className="font-medium">Payment:</span>{" "}
+                                            <span className="font-medium">Payment Status:</span>{" "}
                                             <span
                                                 className={`badge ${selectedParcel.paymentStatus === "paid"
                                                     ? "badge-success"
@@ -200,12 +230,13 @@ const MyParcels = () => {
                                         </p>
 
                                         <p>
-                                            <span className="font-medium">Delivery:</span>{" "}
+                                            <span className="font-medium">Delivery Status:</span>{" "}
                                             <span className="badge badge-info">
                                                 {selectedParcel.deliveryStatus}
                                             </span>
                                         </p>
-
+                                    </div>
+                                    <div className="shadow-sm shad my-2 p-2 border-2 border-gray-200">
                                         <p className="md:col-span-3">
                                             <span className="font-medium">Tracking ID:</span>{" "}
                                             <span className="font-mono text-sm bg-base-200 px-2 py-1 rounded">
@@ -234,8 +265,28 @@ const MyParcels = () => {
             </dialog>
 
 
-            {/* confirmation_modal */}
-            <dialog id="confirmation_modal" className="modal">
+            {/* payment_modal */}
+            <dialog id="payment_modal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-2xl mb-4">Payment</h3>
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        handlePayment();
+                    }}>
+                        <label className="font-medium text-lg"> Enter Your Card Number </label>
+                        <input type="text" name="cardNumber" required className="input input-bordered w-full mt-2" placeholder="Enter Your Card Number" />
+
+                        <div className="modal-action">
+                            <button type="submit" className="btn btn-error">  Submit </button>
+                            <button type="button" className="btn btn-outline" onClick={() => document.getElementById("payment_modal").close()} > Cancel  </button>
+                        </div>
+                    </form>
+                </div>
+            </dialog>
+
+
+            {/* delete_confirmation_modal */}
+            <dialog id="delete_confirmation_modal" className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Confirm Delete</h3>
                     <p className="py-4">Are you sure you want to delete this parcel?</p>
@@ -250,7 +301,7 @@ const MyParcels = () => {
                             className="btn btn-outline"
                             onClick={() => {
                                 setParcelDeleteId(null);
-                                document.getElementById("confirmation_modal").close();
+                                document.getElementById("delete_confirmation_modal").close();
                             }}
                         >
                             Cancel
